@@ -39,7 +39,7 @@ Resources:
   
   RouteTable:
     Type: AWS::EC2::RouteTable
-    DependOn: AttachGateway
+    DependsOn: AttachGateway
     Properties:
       VpcId: !Ref VPC
       Tags:
@@ -47,7 +47,7 @@ Resources:
           Value: !Sub ${EnvironmentName}-RouteTable
   Route:
     Type: AWS::EC2::Route
-    DependOn: AttachGateway
+    DependsOn: AttachGateway
     Properties: 
       RouteTableId: !Ref RouteTable
       DestinationCidrBlock: 0.0.0.0/0
