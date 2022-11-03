@@ -71,3 +71,9 @@ Resources:
     Properties:
       SubnetId: !Ref Subnet
       RouteTableId: !Ref RouteTable
+
+Outputs:
+  VpcOutput:
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${EnvironmentName}-VPC
