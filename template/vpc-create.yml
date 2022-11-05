@@ -13,6 +13,7 @@ Parameters:
   SubnetCIDR:
     Type: String
     Default: 10.0.0.0/24
+  
 
 Resources:
   VPC:
@@ -22,7 +23,38 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-VPC
+  
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-InternetGateway
+  
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties: 
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+  
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    DependsOn: AttachGateway
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-RouteTable
+  Route:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties: 
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
 
+  #MapPublicIpOnLaunch
+  #このサブネットで起動されたインスタンスがパブリックIPv4アドレスを受け取るかどうかを示す。デフォルト値はfalse
   Subnet:
     Type: AWS::EC2::Subnet
     Properties:
@@ -33,3 +65,20 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-Subnet
+  
+  SubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref Subnet
+      RouteTableId: !Ref RouteTable
+
+Outputs:
+  VpcOutput:
+    Value: !Ref VPC
+    Export:
+      Name: !Sub ${EnvironmentName}-VPC
+      
+  SubnetOutput:
+    Value: !Ref Subnet
+    Export:
+    Name: !Sub ${EnvironmentName}-Subnet
