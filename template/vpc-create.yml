@@ -77,8 +77,8 @@ Outputs:
     Value: !Ref VPC
     Export:
       Name: !Sub ${EnvironmentName}-VPC
-      
+
   SubnetOutput:
     Value: !Ref Subnet
     Export:
-    Name: !Sub ${EnvironmentName}-Subnet
+      Name: !Sub ${EnvironmentName}-Subnet
