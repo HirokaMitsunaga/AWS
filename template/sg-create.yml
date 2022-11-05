@@ -37,7 +37,7 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName}-tg-sg
 Outputs:
-  TgSecurityGroupOutput:
+  TgecurityGroupOutput:
     Value: !Ref TARGETGROUPSecurityGroup
     Export:
-      Name: !Sub ${EnvironmentName}-TARGETGROUPSecurityGroups
+      Name: !Sub test-environment-TARGETGROUPSecurityGroups
