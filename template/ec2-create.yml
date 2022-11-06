@@ -21,4 +21,13 @@ Resources:
       SecurityGroupIds: 
         - !ImportValue test-environment-TARGETGROUPSecurityGroups
       SubnetId: !ImportValue test-environment-Subnet
-            
+
+  Instence02:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0de5311b2a443fb89"
+      KeyName: !Ref KeyName
+      InstanceType: t2.micro
+      SecurityGroupIds: 
+        - !ImportValue test-environment-TARGETGROUPSecurityGroups
+      SubnetId: !ImportValue test-environment-Subnet

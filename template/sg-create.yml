@@ -22,7 +22,7 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName}-alb-sg
 
-  TARGETGROUPSecurityGroup:
+  TargetgroupSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Target Group ingress group
@@ -38,6 +38,6 @@ Resources:
           Value: !Sub ${EnvironmentName}-tg-sg
 Outputs:
   TgecurityGroupOutput:
-    Value: !Ref TARGETGROUPSecurityGroup
+    Value: !Ref TargetgroupSecurityGroup
     Export:
-      Name: !Sub test-environment-TARGETGROUPSecurityGroups
+      Name: !Sub test-environment-TargetgroupSecurityGroups
