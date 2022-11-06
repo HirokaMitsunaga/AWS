@@ -30,7 +30,7 @@ Resources:
         - Key: Name
           Value: !Sub ${EnvironmentName}-alb-sg
 
-  TargetgroupSecurityGroup:
+  TargetGroupSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Target Group ingress group
@@ -52,7 +52,7 @@ Resources:
       KeyName: !Ref KeyName
       InstanceType: t2.micro
       SecurityGroupIds: 
-        - !Ref TargetgroupSecurityGroup
+        - !Ref TargetGroupSecurityGroup
       SubnetId: !ImportValue test-environment-PublicSubnet01
       Tags:
         - Key: Name
@@ -71,7 +71,7 @@ Resources:
       KeyName: !Ref KeyName
       InstanceType: t2.micro
       SecurityGroupIds: 
-        - !Ref TargetgroupSecurityGroup
+        - !Ref TargetGroupSecurityGroup
       SubnetId: !ImportValue test-environment-PublicSubnet02
       Tags:
         - Key: Name
