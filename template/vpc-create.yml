@@ -105,6 +105,6 @@ Outputs:
       Name: !Sub ${EnvironmentName}-PublicSubnet01
   
   PublicSubnet02Output:
-    Value: !Ref PublicSubnet01
+    Value: !Ref PublicSubnet02
     Export:
       Name: !Sub ${EnvironmentName}-PublicSubnet02
