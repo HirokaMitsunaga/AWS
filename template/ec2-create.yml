@@ -19,8 +19,8 @@ Resources:
       KeyName: !Ref KeyName
       InstanceType: t2.micro
       SecurityGroupIds: 
-        - !ImportValue test-environment-TARGETGROUPSecurityGroups
-      SubnetId: !ImportValue test-environment-Subnet
+        - !ImportValue test-environment-TargetgroupSecurityGroups
+      SubnetId: !ImportValue test-environment-PublicSubnet01
 
   Instence02:
     Type: AWS::EC2::Instance
@@ -29,5 +29,5 @@ Resources:
       KeyName: !Ref KeyName
       InstanceType: t2.micro
       SecurityGroupIds: 
-        - !ImportValue test-environment-TARGETGROUPSecurityGroups
-      SubnetId: !ImportValue test-environment-Subnet
+        - !ImportValue test-environment-TargetgroupSecurityGroups
+      SubnetId: !ImportValue test-environment-PublicSubnet02
