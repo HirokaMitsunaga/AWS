@@ -10,9 +10,13 @@ Parameters:
     Type: String
     Default: 10.0.0.0/16
 
-  SubnetCIDR:
+  PublicSubnet01CIDR:
     Type: String
-    Default: 10.0.0.0/24
+    Default: 10.0.10.0/24
+
+  PublicSubnet02CIDR:
+    Type: String
+    Default: 10.0.20.0/24
   
 
 Resources:
@@ -55,21 +59,38 @@ Resources:
 
   #MapPublicIpOnLaunch
   #このサブネットで起動されたインスタンスがパブリックIPv4アドレスを受け取るかどうかを示す。デフォルト値はfalse
-  Subnet:
+  PublicSubnet01:
     Type: AWS::EC2::Subnet
     Properties:
-      CidrBlock: !Ref SubnetCIDR
+      CidrBlock: !Ref PublicSubnet01CIDR
       MapPublicIpOnLaunch: true
       VpcId: !Ref VPC
       AvailabilityZone: ap-northeast-1a
       Tags:
         - Key: Name
-          Value: !Sub ${EnvironmentName}-Subnet
+          Value: !Sub ${EnvironmentName}-PublicSubnet01
   
-  SubnetRouteTableAssociation:
+  PublicSubnet01RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      SubnetId: !Ref Subnet
+      SubnetId: !Ref PublicSubnet01
+      RouteTableId: !Ref RouteTable
+  
+  PublicSubnet02:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: !Ref PublicSubnet02CIDR
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref VPC
+      AvailabilityZone: ap-northeast-1c
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PublicSubnet02
+  
+  PublicSubnet02RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet02
       RouteTableId: !Ref RouteTable
 
 Outputs:
@@ -78,7 +99,12 @@ Outputs:
     Export:
       Name: !Sub ${EnvironmentName}-VPC
 
-  SubnetOutput:
-    Value: !Ref Subnet
+  PublicSubnet01Output:
+    Value: !Ref PublicSubnet01
     Export:
-      Name: !Sub ${EnvironmentName}-Subnet
+      Name: !Sub ${EnvironmentName}-PublicSubnet01
+  
+  PublicSubnet02Output:
+    Value: !Ref PublicSubnet01
+    Export:
+      Name: !Sub ${EnvironmentName}-PublicSubnet02
