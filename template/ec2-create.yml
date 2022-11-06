@@ -21,6 +21,10 @@ Resources:
       SecurityGroupIds: 
         - !ImportValue test-environment-TargetgroupSecurityGroups
       SubnetId: !ImportValue test-environment-PublicSubnet01
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PublicSubnet01-Instence01
+      
 
   Instence02:
     Type: AWS::EC2::Instance
@@ -31,3 +35,6 @@ Resources:
       SecurityGroupIds: 
         - !ImportValue test-environment-TargetgroupSecurityGroups
       SubnetId: !ImportValue test-environment-PublicSubnet02
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PublicSubnet02-Instence02
