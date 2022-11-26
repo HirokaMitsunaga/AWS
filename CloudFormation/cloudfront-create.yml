@@ -38,6 +38,13 @@ Resources:
             S3OriginConfig: 
               OriginAccessIdentity: ''
         PriceClass: PriceClass_200
+        DefaultRootObject: "index.html"
+        Aliases:
+          - "inspection.prod-hiro-aws.com"
+        ViewerCertificate:
+          AcmCertificateArn: "arn:aws:acm:us-east-1:639565968831:certificate/9835312c-daff-44a8-9f9c-314e09797ff5"
+          MinimumProtocolVersion: "TLSv1.2_2021"
+          SslSupportMethod: "sni-only"
 
 Outputs:
 # ------------------------------------------------------------#
