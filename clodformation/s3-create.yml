@@ -1,0 +1,59 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: s3 create template
+
+Parameters:
+# ------------------------------------------------------------#
+# Parameters
+# ------------------------------------------------------------# 
+  BucketName:
+    Type: String
+
+# ------------------------------------------------------------#
+# S3
+# ------------------------------------------------------------# 
+Resources:
+  S3:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Ref BucketName
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: True
+        BlockPublicPolicy: True
+        IgnorePublicAcls: True
+        RestrictPublicBuckets: True
+
+  S3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties: 
+      Bucket: !Ref S3
+      PolicyDocument: 
+        Version: "2008-10-17"
+        Statement: 
+          - Sid: "AllowCloudFrontServicePrincipal"
+            Effect: "Allow"
+            Principal: 
+              Service: 
+                - "cloudfront.amazonaws.com"
+            Action: 
+              - "s3:GetObject"
+            Resource: 
+              - !Sub ${S3.Arn}/*
+            Condition: 
+              StringEquals:
+                AWS:SourceArn: 
+                  - !Join 
+                    - ''
+                    - - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/'
+                      - !ImportValue CloudFrontID
+Outputs:
+# ------------------------------------------------------------#
+# Outputs
+# ------------------------------------------------------------# 
+  S3:
+    Value: !GetAtt S3.DomainName
+    Export: 
+      Name: S3
+
+
+
+

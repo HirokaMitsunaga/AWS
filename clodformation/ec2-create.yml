@@ -1,0 +1,40 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: vpc create template
+
+Parameters:
+  EnvironmentName:
+    Type: String
+    Default: test-environment
+
+  KeyName:
+    Description: The EC2 Key Pair to allow SSH access to the instance
+    Type: AWS::EC2::KeyPair::KeyName
+
+
+Resources:
+  Instence01:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0de5311b2a443fb89"
+      KeyName: !Ref KeyName
+      InstanceType: t2.micro
+      SecurityGroupIds: 
+        - !ImportValue test-environment-TargetgroupSecurityGroups
+      SubnetId: !ImportValue test-environment-PublicSubnet01
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PublicSubnet01-Instence01
+      
+
+  Instence02:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0de5311b2a443fb89"
+      KeyName: !Ref KeyName
+      InstanceType: t2.micro
+      SecurityGroupIds: 
+        - !ImportValue test-environment-TargetgroupSecurityGroups
+      SubnetId: !ImportValue test-environment-PublicSubnet02
+      Tags:
+        - Key: Name
+          Value: !Sub ${EnvironmentName}-PublicSubnet02-Instence02

@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: CloudFront Stack
+
+Resources:
+# ------------------------------------------------------------#
+# CloudFront
+# ------------------------------------------------------------# 
+  OAC: 
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties: 
+      OriginAccessControlConfig:
+        Description: Access Control
+        Name: OAC
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  CloudFront:
+    Type: AWS::CloudFront::Distribution
+    Properties: 
+      DistributionConfig:
+        DefaultCacheBehavior: 
+          AllowedMethods:
+            - GET
+            - HEAD
+          CachedMethods:
+            - GET
+            - HEAD
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          TargetOriginId: S3
+          ViewerProtocolPolicy: allow-all
+        Enabled: true
+        Origins: 
+          - DomainName: !ImportValue S3
+            Id: S3
+            OriginAccessControlId: !GetAtt OAC.Id
+            S3OriginConfig: 
+              OriginAccessIdentity: ''
+        PriceClass: PriceClass_200
+
+Outputs:
+# ------------------------------------------------------------#
+# Outputs
+# ------------------------------------------------------------# 
+  CloudFrontID:
+    Value: !Ref CloudFront
+    Export: 
+      Name: CloudFrontID
