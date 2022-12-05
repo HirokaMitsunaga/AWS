@@ -2,6 +2,15 @@ AWSTemplateFormatVersion: "2010-09-09"
 
 Description: CloudFront Stack
 
+Parameters:
+  DomainName:
+    Type: String
+    Default: "inspection.prod-hiro-aws.com"
+  
+  CertificateID:
+    Type: String
+    Default: "9835312c-daff-44a8-9f9c-314e09797ff5"
+
 Resources:
 # ------------------------------------------------------------#
 # CloudFront
@@ -40,9 +49,9 @@ Resources:
         PriceClass: PriceClass_200
         DefaultRootObject: "index.html"
         Aliases:
-          - "inspection.prod-hiro-aws.com"
+          - !Sub "${DomainName}"
         ViewerCertificate:
-          AcmCertificateArn: "arn:aws:acm:us-east-1:639565968831:certificate/9835312c-daff-44a8-9f9c-314e09797ff5"
+          AcmCertificateArn: !Sub "arn:aws:acm:us-east-1:${AWS::AccountId}:certificate/${CertificateID}"
           MinimumProtocolVersion: "TLSv1.2_2021"
           SslSupportMethod: "sni-only"
 
