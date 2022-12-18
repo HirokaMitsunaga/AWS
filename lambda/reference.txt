@@ -1,0 +1,10 @@
+lambdaレイヤー追加の参考手順（Cloud9で実施しローカルに落として、設定した）
+[https://dev.classmethod.jp/articles/lambda-boto3-layer/](https://dev.classmethod.jp/articles/lambda-boto3-layer/)
+キャッシュクリアの参考：
+[https://dev.classmethod.jp/articles/cloudfront-cache-clear/](https://dev.classmethod.jp/articles/cloudfront-cache-clear/)
+デフォルトルートオブジェクトの変更時の参考：
+[https://handyman.dulare.com/disabling-aws-cloudfront-distribution-using-python-and-boto3/](https://handyman.dulare.com/disabling-aws-cloudfront-distribution-using-python-and-boto3/)
+boto3の参考：
+[https://boto3.amazonaws.com/v1/documentation/api/latest/index.html](https://boto3.amazonaws.com/v1/documentation/api/latest/index.html)
+トリガーの参考：
+[https://dev.classmethod.jp/articles/lambda-my-first-step/](https://dev.classmethod.jp/articles/lambda-my-first-step/)
