@@ -5,22 +5,22 @@ Description: CloudFront Stack
 Parameters:
   DomainName:
     Type: String
-    Default: "inspection.prod-hiro-aws.com"
-  
+
   CertificateID:
     Type: String
     Default: "9835312c-daff-44a8-9f9c-314e09797ff5"
+  
+  BucketName:
+    Type: String
 
 Resources:
-# ------------------------------------------------------------#
-# CloudFront
-# ------------------------------------------------------------# 
+
   OAC: 
     Type: AWS::CloudFront::OriginAccessControl
     Properties: 
       OriginAccessControlConfig:
         Description: Access Control
-        Name: OAC
+        Name: OAC-20220102
         OriginAccessControlOriginType: s3
         SigningBehavior: always
         SigningProtocol: sigv4
@@ -41,7 +41,7 @@ Resources:
           ViewerProtocolPolicy: allow-all
         Enabled: true
         Origins: 
-          - DomainName: !ImportValue S3
+          - DomainName: !Sub ${BucketName}.s3.ap-northeast-1.amazonaws.com
             Id: S3
             OriginAccessControlId: !GetAtt OAC.Id
             S3OriginConfig: 
@@ -56,10 +56,7 @@ Resources:
           SslSupportMethod: "sni-only"
 
 Outputs:
-# ------------------------------------------------------------#
-# Outputs
-# ------------------------------------------------------------# 
   CloudFrontID:
     Value: !Ref CloudFront
     Export: 
-      Name: CloudFrontID
+      Name: CloudFrontID-20230102

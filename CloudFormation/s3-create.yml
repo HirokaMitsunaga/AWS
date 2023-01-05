@@ -2,15 +2,9 @@ AWSTemplateFormatVersion: "2010-09-09"
 Description: s3 create template
 
 Parameters:
-# ------------------------------------------------------------#
-# Parameters
-# ------------------------------------------------------------# 
   BucketName:
     Type: String
 
-# ------------------------------------------------------------#
-# S3
-# ------------------------------------------------------------# 
 Resources:
   S3:
     Type: AWS::S3::Bucket
@@ -44,16 +38,7 @@ Resources:
                   - !Join 
                     - ''
                     - - !Sub 'arn:aws:cloudfront::${AWS::AccountId}:distribution/'
-                      - !ImportValue CloudFrontID
-Outputs:
-# ------------------------------------------------------------#
-# Outputs
-# ------------------------------------------------------------# 
-  S3:
-    Value: !GetAtt S3.DomainName
-    Export: 
-      Name: S3
-
+                      - !ImportValue CloudFrontID-20230102
 
 
 
