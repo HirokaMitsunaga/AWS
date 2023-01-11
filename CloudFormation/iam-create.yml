@@ -43,7 +43,7 @@ Resources:
                   - s3:ListBucket
                 Condition:
                   IpAddress:
-                    aws:SourceIp: "118.87.62.94/32"
+                    aws:SourceIp: "111.222.333.444/32"
               - Sid: AllObjectActions
                 Effect: Allow
                 Action:
@@ -55,7 +55,7 @@ Resources:
                   - !Sub "arn:aws:s3:::${BucketName}/${FileName2}"
                 Condition:
                   IpAddress:
-                    aws:SourceIp: "118.87.62.94/32"
+                    aws:SourceIp: "111.222.333.444/32"
 
   IAMUser1AccessKey:
       Type: AWS::IAM::AccessKey
