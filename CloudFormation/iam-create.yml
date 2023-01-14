@@ -27,35 +27,38 @@ Parameters:
 
 
 Resources:
+  IAMPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      ManagedPolicyName: !Sub ${AWS::StackName}-user
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Resource: !Sub "arn:aws:s3:::${BucketName}"
+            Action:
+              - s3:ListBucket
+            Condition:
+              IpAddress:
+                aws:SourceIp: "11.22.33.44/32"
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+              - s3:GetObject
+              - s3:DeleteObject
+            Resource:
+              - !Sub "arn:aws:s3:::${BucketName}/${FileName1}"
+              - !Sub "arn:aws:s3:::${BucketName}/${FileName2}"
+            Condition:
+              IpAddress:
+                aws:SourceIp: "11.22.33.44/32"
+
   IAMUser:
     Type: AWS::IAM::User
     Properties:
       UserName: !Sub ${AWS::StackName}-user
-      Policies:
-        - PolicyName: !Sub ${AWS::StackName}-policy
-          PolicyDocument:
-            Version: 2012-10-17
-            Statement:
-              - Sid: ListObjectsInBucket
-                Effect: Allow
-                Resource: !Sub "arn:aws:s3:::${BucketName}"
-                Action:
-                  - s3:ListBucket
-                Condition:
-                  IpAddress:
-                    aws:SourceIp: "111.222.333.444/32"
-              - Sid: AllObjectActions
-                Effect: Allow
-                Action:
-                  - s3:PutObject
-                  - s3:GetObject
-                  - s3:DeleteObject
-                Resource:
-                  - !Sub "arn:aws:s3:::${BucketName}/${FileName1}"
-                  - !Sub "arn:aws:s3:::${BucketName}/${FileName2}"
-                Condition:
-                  IpAddress:
-                    aws:SourceIp: "111.222.333.444/32"
+      ManagedPolicyArns:
+        - !Ref IAMPolicy
 
   IAMUser1AccessKey:
       Type: AWS::IAM::AccessKey
@@ -63,11 +66,7 @@ Resources:
         UserName: !Ref IAMUser
         
 Outputs:
-  AccessKeyforIAMUser:
+  AccessKeyformyaccesskey:
     Value: !Ref IAMUser1AccessKey
-    Export: 
-      Name: AccessKeyforIAMUser
-  SecretKeyforIAMUser:
+  SecretKeyformyaccesskey:
     Value: !GetAtt IAMUser1AccessKey.SecretAccessKey
-    Export: 
-      Name: SecretKeyforIAMUser
