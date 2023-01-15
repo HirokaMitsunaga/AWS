@@ -2,26 +2,32 @@ import boto3
 import os
 import time
 
-#get file name from S3bucket
+#ディストリビューションIDとboto3のclientを取得する
+distribution_id = os.environ['DistributionId']
+cf_client = boto3.client('cloudfront')
+
+#S3へアップロードしたファイル名を取得する
 def lambda_handler(event, context):
- input_key = event['Records'][0]['s3']['object']['key']
- print("key =", input_key)
- 
- #cash clear CloudFront
- cloudfront = boto3.client('cloudfront')
- distribution_id = os.environ['DistributionId']
- invalidation = cloudfront.create_invalidation(DistributionId=distribution_id,
+ file_name = event['Records'][0]['s3']['object']['key']
+ print("key =", file_name)
+ clear_cash_cloudfront(cf_client,file_name,distribution_id)
+ change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id)
+
+#S3へアップロードしたファイル名でCloudFrontのキャッシュをクリアする
+def clear_cash_cloudfront(cf_client,file_name,distribution_id):
+ invalidation = cf_client.create_invalidation(DistributionId=distribution_id,
      InvalidationBatch={
          'Paths': {
-             'Items': ['/{input_key}'.format(input_key=input_key)],
+             'Items': ['/{file_name}'.format(file_name=file_name)],
              'Quantity': 1
          },
       'CallerReference': str(time.time())
       })
-      
- #change CloudFront DefaultRootObject
- distribution = cloudfront.get_distribution(Id=distribution_id)
+
+#S3へアップロードしたファイル名でCloudFrontのデフォルトルートオブジェクトを変更する
+def change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id):
+ distribution = cf_client.get_distribution(Id=distribution_id)
  ETag = distribution['ETag']
  distribution_config = distribution['Distribution']['DistributionConfig']
- distribution_config['DefaultRootObject'] = input_key
- cloudfront.update_distribution(DistributionConfig=distribution_config, Id=distribution_id, IfMatch=ETag)
+ distribution_config['DefaultRootObject'] = file_name
+ cf_client.update_distribution(DistributionConfig=distribution_config, Id=distribution_id, IfMatch=ETag)
