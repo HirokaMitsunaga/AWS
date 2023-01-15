@@ -54,7 +54,7 @@ Resources:
   ChangeCloudFrontDefaultRootObjectLambdaPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      ManagedPolicyName: !Sub ${AWS::StackName}-fnction-policy
+      ManagedPolicyName: "ChangeCloudFrontDefaultRootObjectLambdaPolicy"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -78,7 +78,7 @@ Resources:
   ChangeCloudFrontDefaultRootObjectLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${AWS::StackName}-function-execution-role
+      RoleName: "ChangeCloudFrontDefaultRootObjectLambdaRole"
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -93,7 +93,7 @@ Resources:
   S3NotificationLambdaPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      ManagedPolicyName: !Sub ${AWS::StackName}-fnction-policy
+      ManagedPolicyName: "S3NotificationLambdaPolicy"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -112,7 +112,7 @@ Resources:
   S3NotificationLambdaRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub ${AWS::StackName}-function-execution-role
+      RoleName: "S3NotificationLambdaRole"
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -137,7 +137,7 @@ Resources:
     Type: 'Custom::LambdaTrigger'
     DependsOn: LambdaInvokePermission
     Properties:
-      ServiceToken: !GetAtt CustomResourceLambdaFunction.Arn
+      ServiceToken: !GetAtt S3NotificationLambda.Arn
       Id: !Sub
         - S3NotificationLambda-${UniqueId}
         - UniqueId: !Select [0, !Split ['-', !Select [2, !Split [/, !Ref 'AWS::StackId']]]]
