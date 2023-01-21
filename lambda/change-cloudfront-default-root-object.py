@@ -14,7 +14,7 @@ logger.setLevel(20)
 #S3へアップロードしたファイル名を取得する
 def lambda_handler(event, context):
     file_name = event['Records'][0]['s3']['object']['key']
-    logger.info('S3へアップロードされたファイル名は{file_name}'.format(file_name=file_name))
+    logger.info('S3へアップロードされたファイル名は{file_name}です'.format(file_name=file_name))
     try:
         clear_cash_cloudfront(cf_client,file_name,distribution_id)
         logger.info('CloudFrontのキャッシュクリアに成功しました')
