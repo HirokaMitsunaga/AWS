@@ -99,7 +99,7 @@ Resources:
   ChangeCloudFrontDefaultRootObjectLambdaMetricFilter:
     Type: AWS::Logs::MetricFilter
     Properties:
-      FilterPattern: "ERROR"
+      FilterPattern: "[ERROR]"
       LogGroupName: !Ref ChangeCloudFrontDefaultRootObjectLambdaLogGroup
       MetricTransformations:
         -
