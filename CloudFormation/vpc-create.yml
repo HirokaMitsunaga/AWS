@@ -18,6 +18,10 @@ Parameters:
     Type: String
     Default: 10.0.20.0/24
   
+    PrivateSubnetCIDR:
+    Type: String
+    Default: 10.0.30.0/24
+  
 
 Resources:
   VPC:
