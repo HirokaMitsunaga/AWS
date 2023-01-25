@@ -14,21 +14,16 @@ logger.setLevel(20)
 #S3へアップロードしたファイル名を取得する
 def lambda_handler(event, context):
     file_name = event['Records'][0]['s3']['object']['key']
-    logger.info('S3へアップロードされたファイル名は{file_name}'.format(file_name=file_name))
+    logger.info('S3へアップロードされたファイル名は{file_name}です'.format(file_name=file_name))
+    
     try:
-        clear_cash_cloudfront(cf_client,file_name,distribution_id)
-        logger.info('CloudFrontのキャッシュクリアに成功しました')
-    except:
-        logger.exception('CloudFrontのキャッシュクリアに失敗しました')
-        sys.exit()
-    try:
+        clear_cashe_cloudfront(cf_client,file_name,distribution_id)
         change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id)
-        logger.info('CloudFrontのデフォルトルートオブジェクトの変更に成功しました')
-    except:
-        logger.exception('CloudFrontのデフォルトルートオブジェクトの変更に失敗しました')
+    except Exception as e:
+        logging.exception(e)
 
 #S3へアップロードしたファイル名でCloudFrontのキャッシュをクリアする
-def clear_cash_cloudfront(cf_client,file_name,distribution_id):
+def clear_cashe_cloudfront(cf_client,file_name,distribution_id):
     try:
         invalidation = cf_client.create_invalidation(DistributionId=distribution_id,
             InvalidationBatch={
@@ -38,9 +33,18 @@ def clear_cash_cloudfront(cf_client,file_name,distribution_id):
                 },
              'CallerReference': str(time.time())
              })
+        
+        #戻り値のHTTPStatusCodeが201である場合、成功としそれ以外は失敗したとする
+        invalidation_responce = invalidation['ResponseMetadata']['HTTPStatusCode']
+        if invalidation_responce == 201:
+            logger.info('CloudFrontのキャッシュクリアに成功しました')
+        else:
+            logger.exception('CloudFrontのキャッシュクリアに失敗しました')
+            sys.exit()
+
     except Exception as e:
         logging.exception(e)
-        raise
+        raise e
 
 #S3へアップロードしたファイル名でCloudFrontのデフォルトルートオブジェクトを変更する
 def change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id):
@@ -49,7 +53,15 @@ def change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id):
         ETag = distribution['ETag']
         distribution_config = distribution['Distribution']['DistributionConfig']
         distribution_config['DefaultRootObject'] = file_name
-        cf_client.update_distribution(DistributionConfig=distribution_config, Id=distribution_id, IfMatch=ETag)
+        update_distribution = cf_client.update_distribution(DistributionConfig=distribution_config, Id=distribution_id, IfMatch=ETag)
+        
+        #戻り値のHTTPStatusCodeが200である場合、成功としそれ以外は失敗したとする
+        update_distribution_responce = update_distribution['ResponseMetadata']['HTTPStatusCode']
+        if update_distribution_responce == 200:
+            logger.info('CloudFrontのデフォルトルートオブジェクトの変更に成功しました')
+        else:
+            logger.exception('CloudFrontのデフォルトルートオブジェクトの変更に失敗しました')
+            
     except Exception as e:
         logging.exception(e)
-        raise
+        raise e
