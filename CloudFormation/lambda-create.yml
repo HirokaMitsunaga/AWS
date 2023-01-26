@@ -105,8 +105,9 @@ Resources:
         -
           MetricValue: 1
           DefaultValue: 0
-          MetricNamespace: "LambdaMetricFilter"
+          MetricNamespace: "ChangeCloudFrontDefaultRootObjectLambdaMetric"
           MetricName: "change-cloudfront-defaultrootobject-exception"
+    DependsOn: ChangeCloudFrontDefaultRootObjectLambdaLogGroup
 
   ChangeCloudFrontDefaultRootObjectLambdaAlarm:
     Type: AWS::CloudWatch::Alarm
@@ -114,15 +115,16 @@ Resources:
       AlarmDescription: "Change CloudFront DefaultRootObject Exception Alarm"
       AlarmName: "change-cloudfront-defaultrootobject-alarm"
       AlarmActions:
-        - "arn:aws:sns:ap-northeast-1:${AWS::AccountId}::event:d5a4fe15-06a0-4039-8c6e-b2d6d6051b69"
-      ComparisonOperator: GreaterThanThreshold
+        - "arn:aws:sns:ap-northeast-1:${AWS::AccountId}::event"
+      ComparisonOperator: GreaterThanOrEqualToThreshold
       Threshold: 1
       DatapointsToAlarm: 1
       EvaluationPeriods: 1
       MetricName: "change-cloudfront-defaultrootobject-exception"
-      Namespace: "AWS/Lambda"
+      Namespace: "ChangeCloudFrontDefaultRootObjectLambdaMetric"
       Period: 60
-      Statistic: Maximum
+      Statistic: Sum
+    DependsOn: ChangeCloudFrontDefaultRootObjectLambdaMetricFilter
 
   S3NotificationLambdaPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
