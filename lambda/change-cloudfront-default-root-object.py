@@ -13,10 +13,9 @@ logger.setLevel(20)
 
 #S3へアップロードしたファイル名を取得する
 def lambda_handler(event, context):
-    file_name = event['Records'][0]['s3']['object']['key']
-    logger.info('S3へアップロードされたファイル名は{file_name}です'.format(file_name=file_name))
-    
     try:
+        file_name = event['Records'][0]['s3']['object']['key']
+        logger.info('S3へアップロードされたファイル名は{file_name}です'.format(file_name=file_name))
         clear_cashe_cloudfront(cf_client,file_name,distribution_id)
         change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id)
     except Exception as e:
@@ -37,14 +36,20 @@ def clear_cashe_cloudfront(cf_client,file_name,distribution_id):
         #戻り値のHTTPStatusCodeが201である場合、成功としそれ以外は失敗したとする
         invalidation_responce = invalidation['ResponseMetadata']['HTTPStatusCode']
         if invalidation_responce == 201:
+            #キャッシュがクリアされるまで待つ
+            invalidation_id = invalidation['Invalidation']['Id']
+            get_invalidation = cf_client.get_invalidation(DistributionId=distribution_id,Id=invalidation_id)
+            invalidation_status = get_invalidation['Invalidation']['Status']
+            while(invalidation_status != 'Completed'):
+                print('CloudFrontのキャッシュがクリアされるまで待ちます。')
+                time.sleep(10)
+                get_invalidation = cf_client.get_invalidation(DistributionId=distribution_id,Id=invalidation_id)
+                invalidation_status = get_invalidation['Invalidation']['Status']
+                print('現在のステータスは{invalidation_status}です'.format(invalidation_status=invalidation_status))
             logger.info('CloudFrontのキャッシュクリアに成功しました')
         else:
             logger.exception('CloudFrontのキャッシュクリアに失敗しました')
             sys.exit()
-        invalidation_id = invalidation['Invalidation']['Id']
-        get_invalidation = cf_client.get_invalidation(DistributionId=distribution_id,Id=invalidation_id)
-        invalidation_status = get_invalidation['Invalidation']['Status']
-        print(invalidation_status)
     except Exception as e:
         logging.exception(e)
         raise e
@@ -61,12 +66,18 @@ def change_cloudfront_defaultrootobject(cf_client,file_name,distribution_id):
         #戻り値のHTTPStatusCodeが200である場合、成功としそれ以外は失敗したとする
         update_distribution_responce = update_distribution['ResponseMetadata']['HTTPStatusCode']
         if update_distribution_responce == 200:
+            #ディストリビューションが更新されるまで待つ
+            get_distribution = cf_client.get_distribution(Id=distribution_id)
+            distribution_status = get_distribution['Distribution']['Status']
+            while(distribution_status != 'Deployed'):
+                print('CloudFrontのディストリビューションが変更されるまで待ちます')
+                time.sleep(10)
+                get_distribution = cf_client.get_distribution(Id=distribution_id)
+                distribution_status = get_distribution['Distribution']['Status']
+                print('現在のステータスは{distribution_status}です'.format(distribution_status=distribution_status))
             logger.info('CloudFrontのデフォルトルートオブジェクトの変更に成功しました')
         else:
-            logger.exception('CloudFrontのデフォルトルートオブジェクトの変更に失敗しました')
-            
-        print(cf_client.get_distribution(Id=distribution_id)['Distribution']['Status'])
-            
+            logger.exception('CloudFrontのデフォルトルートオブジェクトの変更に失敗しました')            
     except Exception as e:
         logging.exception(e)
         raise e
