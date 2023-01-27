@@ -44,7 +44,7 @@ Resources:
       Handler: change-cloudfront-default-root-object.lambda_handler
       Role: !GetAtt ChangeCloudFrontDefaultRootObjectLambdaRole.Arn
       Runtime: python3.9
-      Timeout: 10
+      Timeout: 900
       Layers: 
         - !Ref LambdaLayer
       Environment:
@@ -72,6 +72,7 @@ Resources:
             Effect: Allow
             Action:
               - cloudfront:GetDistribution
+              - cloudfront:GetInvalidation
               - cloudfront:CreateInvalidation
               - cloudfront:UpdateDistribution
 
